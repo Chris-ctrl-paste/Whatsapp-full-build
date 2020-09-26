@@ -1,54 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import Pusher from 'pusher-js';
-import './App.css';
-import Sidebar from './Sidebar';
-import Chat from './Chat';
-import axios from './axios'
+import React from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+
+import Chat from './components/Chat';
+import Login from './components/Login';
+import Sidebar from './components/Sidebar'
+import './css/App.css';
+import { useStateValue } from './StateProvider';
+import * as firebase from 'firebase';
 
 function App() {
+  const [{ user },] = useStateValue();
 
-  const [messages, setMessages] = useState([])
-  useEffect(() => {
-    axios.get('/api/v1/messages/sync')
-      .then(response => {
-        setMessages(response.data)
-
-      })
-  }, [])
+  // const user = firebase.auth().currentUser;
 
 
-  useEffect(() => {
-    const pusher = new Pusher('89e4c35f10b186c53638', {
-      cluster: 'eu'
-    });
+  // firebase.auth().onAuthStateChanged(function (user) {
+  //   if (!user) {
+  //     return (
+  //       <Login />
+  //     )
+  //   } else {
+  //     return (
 
-    const channel = pusher.subscribe('messages');
-    channel.bind('inserted', function (newMessage) {
-      // alert(JSON.stringify(newMessage));
-      setMessages([...messages, newMessage])
-    });
-    // Clean up
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-    }
-    // Clean up function
-  }, [messages])
+  //       <div className="app_body">
+  //         <Router>
+  //           <Sidebar />
+  //           <Switch>
+  //             <Route path="/rooms/:roomId" >
+  //               <Chat />
+  //             </Route>
+  //             <Route path="/">
+  //               <Chat />
+  //             </Route>
+  //           </Switch>
+  //         </Router>
 
-  // console.log(messages)
+  //       </div>
+  //     )
+  //   }
+  // });
+
 
   return (
     <div className="app">
-      <div className="app_body">
-        <Sidebar />
-        <Chat messages={messages} />
-
-
-      </div>
 
 
 
+      {!user ? (
 
+        <Login />
+
+      ) : (
+
+
+          <div className="app_body">
+            <Router>
+              <Sidebar />
+              <Switch>
+                <Route path="/rooms/:roomId" >
+                  <Chat />
+                </Route>
+                <Route path="/">
+                  <Chat />
+                </Route>
+              </Switch>
+            </Router>
+
+          </div>
+        )}
     </div>
   );
 }
