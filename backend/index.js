@@ -12,11 +12,7 @@ const app = express();
 const port = process.env.PORT || 9000
 
 const pusher = new Pusher({
-    appId: '1070132',
-    key: '89e4c35f10b186c53638',
-    secret: '9b5390b133e380911a59',
-    cluster: 'eu',
-    useTLS: true
+    
 });
 
 
@@ -27,7 +23,7 @@ app.use(Cors())
 
 
 // db config
-const connection_url = "mongodb+srv://chris:ZLzd1OPV52NJl0sW@whatsapp.wrg6p.mongodb.net/<dbname>?retryWrites=true&w=majority"
+const connection_url = ""
 const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
